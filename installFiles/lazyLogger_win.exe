@@ -1,0 +1,17 @@
+:: Install Python
+start python-3.5.0-amd64.exe
+
+echo "Do not forget to check the option 'Add to PATH' and do not forget to perform the installation for all users"
+set /p okay="Press enter if the installation of Python was successful!"
+
+:: Install required Libs 
+pip3 install pymysql
+pip3 install pynput
+pip3 install configparser
+pip3 install getpass
+
+python ../configurator.py
+
+cls
+echo "Now start the databasepreparer.py to set up the database (if you have not already done so). This will not be started automatically for security reasons!"
+set /p okay="The installation was successful Press Enter to finish the installation!"
