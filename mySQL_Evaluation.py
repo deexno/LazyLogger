@@ -108,7 +108,7 @@ while True:
         with connection.cursor() as cursor:
             # Read a single record
             if person == "" and timefrom == "":
-                cursor.execute(sql table)
+                cursor.execute(sql, table)
             elif person != "" and timefrom == "":
                 cursor.execute(sql, table, person)
             elif person == "" and timefrom != "":
