@@ -63,8 +63,8 @@ while True:
     print(bcolors.WARNING + "\n\nScreenlocks:" + bcolors.ENDC + "\n2.0 List all screenlocks\n2.1 List all screenlocks in a certain period of time\n"
     "2.2 List all screenlocks grouped by the name\n2.3 Count how often your selected person locked the screen")
     print(bcolors.WARNING + "\n\nInactivities:" + bcolors.ENDC + "\n3.0 List all inactivities\n3.1 List all inactivities in a certain period of time\n"
-    "3.2 List all inactivities grouped by the name\n3.3 Count how often your selected person was inactive\n3.4 Count how often your selected person was inactive\n"
-    "3.5 Count how long a selected person has been inactive")
+    "3.2 List all inactivities grouped by the name\n3.3 Count how often your selected person was inactive\n"
+    "3.4 Count how long a selected person has been inactive\n3.5 Create a 'Top-inactive-Ranking'")
 
     print(bcolors.FAIL + "\n\n\n99. Custom input\n\n\n")
 
@@ -87,19 +87,21 @@ while True:
     if "99" in selection :
         sql = input(bcolors.WARNING +"LazyLogger@deexno:~# " + bcolors.ENDC)
     elif ".0" in selection :
-        sql = "SELECT * FROM (%s)"
+        sql = "SELECT * FROM %s" % (table)
     elif ".1" in selection :
-        timefrom = input("Starting with the date (Format = Year-Month-Day - ex. 2020-07-07): ")
-        timetill = input("Ending with the date (Format = Year-Month-Day): ")
-        sql = "SELECT * FROM (%s) WHERE username = (%s) AND at_date > (%s) AND at_date < (%s)"
+        timefrom = input("Starting with the date (Format = Year.Month.Day - ex. 2020.07.07): ")
+        timetill = input("Ending with the date (Format = Year.Month.Day): ")
+        sql = "SELECT * FROM (%s) WHERE at_date > (%s) AND at_date < (%s)" % (table, timefrom, timetill)
     elif ".2" in selection :
-        sql = "SELECT * FROM (%s) GROUP BY username"
+        sql = "SELECT username, COUNT(*) as Times FROM (%s) GROUP BY username ORDER BY Times DESC" % (table)
     elif ".3" in selection:
         person = input("The name of the person: ")
-        sql = "SELECT Count(username) AS Times FROM (%s) WHERE username = (%s)"
+        sql = "SELECT Count(username) AS Times FROM (%s) WHERE username = (%s)" % (table, person)
     elif ".4" in selection:
         person = input("The name of the person: ")
-        sql = "SELECT SUM(duration) FROM (%s) WHERE username = (%s)"
+        sql = "SELECT SUM(duration) FROM (%s) WHERE username = (%s)" % (table, person)
+    elif ".5" in selection:
+        sql = "SELECT username,SUM(duration) as DAUER from inactivities GROUP BY username ORDER by DAUER DESC;"
     else:
         print("An unacceptable entry was made")
         input("Press enter to continue")
@@ -107,16 +109,7 @@ while True:
     try:
         with connection.cursor() as cursor:
             # Read a single record
-            if person == "" and timefrom == "":
-                cursor.execute(sql, table)
-            elif person != "" and timefrom == "":
-                cursor.execute(sql, table, person)
-            elif person == "" and timefrom != "":
-                cursor.execute(sql, (table, timefrom, timetill))
-            elif person != "" and timefrom != "":
-                cursor.execute(sql, (table, person, timefrom, timetill))
-            else:
-                print("An error has occurred - The SQL code could not be executed successfully")
+            cursor.execute(sql)
 
             connection.commit()
             result = cursor.fetchall()
@@ -125,8 +118,8 @@ while True:
                 print(bcolors.HEADER + str(i) + bcolors.ENDC)
 
             print("Successfull")
-    except:
-        print("ERROR")
+    except Exception as e:
+        print("ERROR " + str(e))
 
     renewed_entry = input("Do you want to display another evaluation? (y/n): ")
     if renewed_entry.lower() != "y":
