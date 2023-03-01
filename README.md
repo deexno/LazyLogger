@@ -8,18 +8,19 @@ All you need is a database with MySQL version 5.5 or higher
 (If you do not have a db, you can create a database completely free online on sites such as https://www.freemysqlhosting.net/)
 
 # Installation
-
-## Windows, Linux and MacOS 
-Start the Installer (installFiles/lazyLogger_win.exe - lazyLogger_linux.sh for Linux and MacOS) and put the LazyLogger.py into the autostart.
-That's it lol.
-
-<details><summary>For Windows-Terminal-Servers:</summary> 
-If you want to set up LazyLogger on a terminal server do it like this:<br>
-1. Install the LazyLogger on the Server 
-2. Create a CPO under Policies/Windows Settings/Skripts which automatically starts the LazyLogger.py after a logon
-</details>
+1. Download this repository and navigate to the downloaded directory.
+2. Install Python 3.10 or a higher version.
+3. If you don't already have it, install Pip3.
+4. Use pip to install all necessary libraries by typing the following command:
+```
+pip3 install pymysql pynput configparser inquirer stubs psutil types-PyMySQL pyinstaller
+```
+5. Run the "configurator.py" and "database_preparer.py" files.
+6. Create an executable file that you can install later on the target system. Keep in mind that the target system must have the same operating system as the one on which you're creating the executable file. For instance, if you want to create an executable file for Linux, run the following command on Linux. If you want to create an executable file for MacOS, run it on MacOS, and so on:
+```
+pyinstaller --onefile lazyLogger.pyw
+```
+You can now copy the executable file to the target system and add it to the autostart.
 
 # Display results/display logs
-1. Start the "mySQL_Evaluation.py" Skript
-2. Have fun
-
+You have the flexibility to use any visualization tool you prefer, be it Grafana, Power BI, or any other software to display your data.
